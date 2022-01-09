@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="冷静的博客">
+    <meta name="keyword"  content="远离浮躁，安心做事">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+        python_pexpect - Rivers的博客 | Rivers&#39;s Blog
+        
+    </title>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/aircloud.css">
+
+    
+<link rel="stylesheet" href="/css/gitment.css">
+
+    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
+    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
+    <!-- ga & ba script hoook -->
+    <script></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body>
+
+<div class="site-nav-toggle" id="site-nav-toggle">
+    <button>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+    </button>
+</div>
+
+<div class="index-about">
+    <i> The palest ink is better than the best memory </i>
+</div>
+
+<div class="index-container">
+    
+    <div class="index-left">
+        
+<div class="nav" id="nav">
+    <div class="avatar-name">
+        <div class="avatar ">
+            <img src="/img/face.jpg" />
+        </div>
+        <div class="name">
+            <i>Rivers 权</i>
+        </div>
+    </div>
+    <div class="contents" id="nav-content">
+        <ul>
+            <li >
+                <a href="/">
+                    <i class="iconfont icon-shouye1"></i>
+                    <span>主页</span>
+                </a>
+            </li>
+            <li >
+                <a href="/tags">
+                    <i class="iconfont icon-biaoqian1"></i>
+                    <span>标签</span>
+                </a>
+            </li>
+            <li >
+                <a href="/archive">
+                    <i class="iconfont icon-guidang2"></i>
+                    <span>存档</span>
+                </a>
+            </li>
+            <li >
+                <a href="/about/">
+                    <i class="iconfont icon-guanyu2"></i>
+                    <span>关于</span>
+                </a>
+            </li>
+            
+            <li>
+                <a id="search">
+                    <i class="iconfont icon-sousuo1"></i>
+                    <span>搜索</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    
+        <div id="toc" class="toc-article">
+    
+</div>
+    
+</div>
+
+
+<div class="search-field" id="search-field">
+    <div class="search-container">
+        <div class="search-input">
+            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
+            <input id="search-input"/>
+            <span id="begin-search">搜索</span>
+        </div>
+        <div class="search-result-container" id="search-result-container">
+
+        </div>
+    </div>
+</div>
+
+        <div class="index-about-mobile">
+            <i> The palest ink is better than the best memory </i>
+        </div>
+    </div>
+    
+    <div class="index-middle">
+        <!-- Main Content -->
+        
+
+
+<div class="post-container">
+    <div class="post-title">
+        python_pexpect
+    </div>
+
+    <div class="post-meta">
+        <span class="attr">发布于：<span>2021-04-17 10:14:05</span></span>
+        
+        <span class="attr">标签：/
+        
+        <a class="tag" href="/tags/#python" title="python">python</a>
+        <span>/</span>
+        
+        <a class="tag" href="/tags/#pexpect" title="pexpect">pexpect</a>
+        <span>/</span>
+        
+        
+        </span>
+        <span class="attr">访问：<span id="busuanzi_value_page_pv"></span>
+</span>
+</span>
+    </div>
+    <div class="post-content ">
+        <hr>
+<p>##一、pexpect简介<br>&emsp;&emsp;pexpect是用于spawn（孵化）子应用并自动控制子应用的python模块。pexpect一般被用在自动交互的应用中，比如：ssh、ftp、passwd，telnet等等。它可以被用在对软件的自动测试中。  </p>
+<p>##二、pexpect的主要组成部分：run()和spawn()<br>####2.1函数run()<br>&emsp;&emsp;run()比spawn类简单，用于快速的运行给出程序，并返回该程序的输出。比如：<br>*pexpect.run(‘ls -la’)</p>
+<p>####2.2类spawn()<br>&emsp;&emsp;spawn类被用来spawn孵化一个子程序，然后与之交互并且期待回复，并做格式匹配。</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">child = pexpect<span class="selector-class">.spawn</span>(scp foo user@example.com)</span><br><span class="line">child<span class="selector-class">.expect</span>(<span class="string">&#x27;Password:&#x27;</span>)</span><br><span class="line">child<span class="selector-class">.sendline</span>(mypassword)</span><br></pre></td></tr></table></figure>
+<p>2.2.1 spawn类的原型  </p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">class pexpect.spawn(command,args=[],<span class="attribute">timeout</span>=30,maxread=2000,searchwindowsize=None,logfile=None,cwd=None,env=None,ignore_sighup=False,echo=True,preexec_fn=None,encoding=None,codec_errors=&#x27;strict&#x27;,dimensions=None,dimensions=None,use_poll=False)</span><br><span class="line">__init__(command, args=[], <span class="attribute">timeout</span>=30, <span class="attribute">maxread</span>=2000, <span class="attribute">searchwindowsize</span>=None, <span class="attribute">logfile</span>=None, <span class="attribute">cwd</span>=None, <span class="attribute">env</span>=None, <span class="attribute">ignore_sighup</span>=<span class="literal">False</span>, <span class="attribute">echo</span>=<span class="literal">True</span>, <span class="attribute">preexec_fn</span>=None, <span class="attribute">encoding</span>=None, <span class="attribute">codec_errors</span>=<span class="string">&#x27;strict&#x27;</span>, <span class="attribute">dimensions</span>=None, <span class="attribute">use_poll</span>=<span class="literal">False</span>)</span><br></pre></td></tr></table></figure>
+<p>2.2.2 spawn的参数command<br>&emsp;&emsp;注意spawn()不解析shell元字符，比如重定向&gt;、pipe |、通配符*。所以当你想运行一个命令并且pipe它到另一个命令时，必须起一个shell，比如：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">child = pexpext<span class="selector-class">.spawn</span>(<span class="string">&#x27;/bin/bash -c &quot;ls -l|grep LOG &gt; logs.txt&quot;&#x27;</span>)</span><br><span class="line">child<span class="selector-class">.expext</span>(pexpect.EOF)</span><br></pre></td></tr></table></figure>
+<p>2.2.2 spawn的参数maxread<br>&emsp;&emsp;maxread参数设置最大的读取buffer，即Pexpect会从TTY一次读取的最大字节数。所以，在输入很多的时候，比较大的maxread会提高系统运行的性能。</p>
+<p>2.2.3 spawn的参数searchwindowsize<br>&emsp;&emsp;当关键字参数searchwindowsize为None(默认)时，在每次接收传入数据的迭代中搜索整个缓冲区。每次迭代的默认扫描字节数非常大，适当减小可以间接地减少搜索成本。  </p>
+<p>2.2.4 spawn的参数timeout<br>&emsp;&emsp;当将关键字参数timeout指定为一个数字(默认值:30)时，在指定的值已经过期(以秒为单位)之后，对于任何expect()家族的方法调用，将引发timeout。当为None时，将不会引发TIMEOUT，并且expect()可能会无限期阻塞，直到匹配为止。    </p>
+<p>2.2.5 spawn的函数expect  </p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">expect(pattern, <span class="attribute">timeout</span>=-1, <span class="attribute">searchwindowsize</span>=-1, <span class="attribute">async_</span>=<span class="literal">False</span>, **kw)</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;expect在输出stream中搜索，直到pattern匹配。pattern可以是字符串、EOF、编译过的re，或者这些类型中的任何一个的列表。字符串将被编译为re类型。模式列表中将把索引值index返回到。如果模式不是列表，则在成功匹配时返回索引0。这可能会引发EOF或TIMEOUT的异常。要避免EOF或TIMEOUT异常，请将EOF或TIMEOUT添加到模式列表中。这将导致expect匹配EOF或TIMEOUT条件，而不是引发异常。  </p>
+<hr>
+<p>参考网址：<a target="_blank" rel="noopener" href="https://pexpect.readthedocs.io/en/stable/api/pexpect.html">https://pexpect.readthedocs.io/en/stable/api/pexpect.html</a></p>
+
+        
+            <div class="donate-container">
+    <div class="donate-button">
+        <button id="donate-button">赞赏</button>
+    </div>
+    <div class="donate-img-container hide" id="donate-img-container">
+        <img id="donate-img" src="" data-src="/img/donate.jpg">
+        <p> 感谢鼓励 </p>
+    </div>
+</div>
+        
+        <br />
+        <div id="comment-container">
+        </div>
+        <div id="disqus_thread"></div>
+
+        <div id="lv-container">
+        </div>
+
+    </div>
+</div>
+
+    </div>
+</div>
+
+
+<footer class="footer">
+    <ul class="list-inline text-center">
+        
+        
+        <li>
+            <a target="_blank" href="https://www.zhihu.com/people/何Rivers">
+                            <span class="fa-stack fa-lg">
+                                 <i class="iconfont icon-zhihu"></i>
+                            </span>
+            </a>
+        </li>
+        
+
+        
+
+        
+
+        
+        <li>
+            <a target="_blank"  href="https://github.com/RiversWang">
+                            <span class="fa-stack fa-lg">
+                                <i class="iconfont icon-github"></i>
+                            </span>
+            </a>
+        </li>
+        
+
+        
+
+    </ul>
+    
+    <p>
+        <span>/</span>
+        
+        <span><a target="_blank" rel="noopener" href="https://zhihu.com/people/he-quan-qi">知乎</a></span>
+        <span>/</span>
+        
+        <span><a href="rivers.sparksfly@gamil.com">Gmail</a></span>
+        <span>/</span>
+        
+        <span><a href="#">It helps SEO</a></span>
+        <span>/</span>
+        
+    </p>
+    
+    <p>
+        <span id="busuanzi_container_site_pv">
+            <span id="busuanzi_value_site_pv"></span>PV
+        </span>
+        <span id="busuanzi_container_site_uv">
+            <span id="busuanzi_value_site_uv"></span>UV
+        </span>
+        Created By <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>  Theme <a target="_blank" rel="noopener" href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a></p>
+</footer>
+
+
+
+
+</body>
+
+<script>
+    // We expose some of the variables needed by the front end
+    window.hexo_search_path = "search.json"
+    window.hexo_root = "/"
+    window.isPost = true
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+
+<script src="/js/index.js"></script>
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+    <script>
+        /**
+         *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+         *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+        */
+        if( '' || '')
+        var disqus_config = function () {
+            this.page.url = '';  // Replace PAGE_URL with your page's canonical URL variable
+            this.page.identifier = ''; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+        };
+
+        (function() { // DON'T EDIT BELOW THIS LINE
+            var d = document, s = d.createElement('script');
+            s.src = 'https://riverswang.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();
+    </script>
+
+
+
+</html>
