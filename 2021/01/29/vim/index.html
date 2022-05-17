@@ -93,7 +93,7 @@
     </div>
     
         <div id="toc" class="toc-article">
-    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-%E5%B8%B8%E8%A7%81%E5%91%BD%E4%BB%A4"><span class="toc-text">1.常见命令</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-ctags%E5%91%BD%E4%BB%A4"><span class="toc-text">2.ctags命令</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3-taglist%E5%91%BD%E4%BB%A4"><span class="toc-text">3.taglist命令</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4-cscope%E5%91%BD%E4%BB%A4"><span class="toc-text">4.cscope命令</span></a></li></ol>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E5%B8%B8%E8%A7%81%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4"><span class="toc-text">1.常见基本命令</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-%E5%A4%9A%E8%A1%8C%E6%B3%A8%E9%87%8A"><span class="toc-text">2.多行注释</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3-%E5%85%A8%E5%B1%80%E6%9B%BF%E6%8D%A2"><span class="toc-text">3.全局替换</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4-cscope"><span class="toc-text">4.cscope</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#5-taglist"><span class="toc-text">5.taglist</span></a>
 </div>
     
 </div>
@@ -142,8 +142,78 @@
 </span>
     </div>
     <div class="post-content ">
-        <h1 id="1-常见命令"><a href="#1-常见命令" class="headerlink" title="1.常见命令"></a>1.常见命令</h1><p>&emsp;&emsp;主要介绍了一些我经常用到的命令~熟能生巧<br>命令|操作|<br>:—————-|:————-|<br>v y p | v进入可视化模式，再按y复制，最后p粘贴<br>/               | 搜索<br>u               | 撤销上一次操作<br>:w               | 移动到文件开头<br>gg                | 居中<br>G               | 移动到文件末尾<br>o              |在光标下再开一行，并进入插入模式<br>O              |在光标上面再开一行<br>:vsp           |纵向切分窗口<br>ctrl+w+方向键   |切换窗口<br>x/d      | 删除选择内容<br>:2,100&gt;&gt;      |从2到100行加两个tab缩进<br>ctrl+R      |撤销上一次操作</p>
-<h1 id="2-ctags命令"><a href="#2-ctags命令" class="headerlink" title="2.ctags命令"></a>2.ctags命令</h1><h1 id="3-taglist命令"><a href="#3-taglist命令" class="headerlink" title="3.taglist命令"></a>3.taglist命令</h1><h1 id="4-cscope命令"><a href="#4-cscope命令" class="headerlink" title="4.cscope命令"></a>4.cscope命令</h1><p>缓解疲惫最好的方法就是睡觉~</p>
+        <h2 id="1-常见基本命令"><a href="#1-常见基本命令" class="headerlink" title="1.常见基本命令"></a>1.常见基本命令</h2><p>&emsp;&emsp;主要介绍了一些我经常用到的命令~熟能生巧</p>
+<table>
+<thead>
+<tr>
+<th>v y p</th>
+<th>v进入可视化模式，再按y复制，最后p粘贴</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>/</td>
+<td>搜索</td>
+</tr>
+<tr>
+<td>u</td>
+<td>撤销上一次操作</td>
+</tr>
+<tr>
+<td>gg</td>
+<td>移动到文件开头</td>
+</tr>
+<tr>
+<td>shift+g</td>
+<td>移动到文件结尾</td>
+</tr>
+<tr>
+<td>vsp</td>
+<td>纵向切分窗口</td>
+</tr>
+<tr>
+<td>dd</td>
+<td>删除当前行</td>
+</tr>
+<tr>
+<td>ctrl+f</td>
+<td>forward向前翻页</td>
+</tr>
+<tr>
+<td>ctrl+b</td>
+<td>backward向后翻页</td>
+</tr>
+<tr>
+<td>:noh</td>
+<td>取消所有高亮</td>
+</tr>
+</tbody></table>
+<h1 id="2-多行注释"><a href="#2-多行注释" class="headerlink" title="2.多行注释"></a>2.多行注释</h1><p>加多行注释</p>
+<p>:起始行号，结束行号s/^/注释符/g</p>
+<p>去除多行注释</p>
+<p>:起始行号，结束行号s/^注释符//g</p>
+<h1 id="3-全局替换"><a href="#3-全局替换" class="headerlink" title="3.全局替换"></a>3.全局替换</h1><p>For example，将文件中所有的foo替换为bar</p>
+<p>:%s/foo/bar/g</p>
+<h1 id="4-cscope"><a href="#4-cscope" class="headerlink" title="4.cscope"></a>4.cscope</h1><p>建立cscope的数据库</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">（1）find . -name &#x27;*.h&#x27; -o -name &#x27;*.c&#x27; -o -name &#x27;*.lua&#x27; -o -name &#x27;*.cpp&#x27;</span><br><span class="line"> -o -name &#x27;*.S&#x27; &gt; cscope.files</span><br><span class="line">/**-q是倒排索引，当文件太多时，会有sort failure，需要去除-q选项*/</span><br><span class="line">（2）cscope -bkq -i cscope.files</span><br></pre></td></tr></table></figure>
+
+<p>使用cscope命令主要是使用以下两个命令：</p>
+<p>寻找指定文件</p>
+<p>:cs find f target.c</p>
+<p>寻找指定字符串</p>
+<p>:cs find t target_string</p>
+<p>为了方便查找</p>
+<p>在~/.vimrc中添加set cscopequickfix=s-,c-,d-,i-,t-,e-</p>
+<p>这样通过:cs find XXX以后，会立即跳转到第一个找到该符号的地方</p>
+<p>然后可以通过:copen来打开quickfix窗口，在窗口中会显示所有的搜索结果</p>
+<h1 id="5-taglist"><a href="#5-taglist" class="headerlink" title="5.taglist"></a>5.taglist</h1><p>跳转到变量或函数的定义处<br>Ctrl + ]</p>
+<p>返回到跳转前的位置</p>
+<p>Ctrl + t </p>
+<p>tag stack 向前</p>
+<p>ctrl+o</p>
+<p>tag stack 向后</p>
+<p>ctrl+i</p>
+<p>打开侧边的tag目录(再执行一遍就会关闭)</p>
+<p>:wm</p>
 
         
             <div class="donate-container">
