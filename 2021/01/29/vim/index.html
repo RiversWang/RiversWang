@@ -146,11 +146,15 @@
 <table>
 <thead>
 <tr>
-<th align="center">v y p</th>
-<th align="center">v进入可视化模式，再按y复制，最后p粘贴</th>
+<th align="center">vim操作</th>
+<th align="center">意义</th>
 </tr>
 </thead>
 <tbody><tr>
+<td align="center">v y p</td>
+<td align="center">v进入可视化模式，再按y复制，最后p粘贴</td>
+</tr>
+<tr>
 <td align="center">/</td>
 <td align="center">搜索</td>
 </tr>
@@ -194,7 +198,7 @@
 <h1 id="3-全局替换"><a href="#3-全局替换" class="headerlink" title="3.全局替换"></a>3.全局替换</h1><p>For example，将文件中所有的foo替换为bar</p>
 <p>:%s/foo/bar/g</p>
 <h1 id="4-cscope"><a href="#4-cscope" class="headerlink" title="4.cscope"></a>4.cscope</h1><p>建立cscope的数据库</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">（1）find . -name &#x27;*.h&#x27; -o -name &#x27;*.c&#x27; -o -name &#x27;*.lua&#x27; -o -name &#x27;*.cpp&#x27;</span><br><span class="line"> -o -name &#x27;*.S&#x27; &gt; cscope.files</span><br><span class="line">/**-q是倒排索引，当文件太多时，会有sort failure，需要去除-q选项*/</span><br><span class="line">（2）cscope -bkq -i cscope.files</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">（1）find . -name &#x27;*.h&#x27; -o -name &#x27;*.c&#x27; -o -name &#x27;*.lua&#x27; -o -name &#x27;*.cpp&#x27; -o -name &#x27;*.S&#x27; &gt; cscope.files</span><br><span class="line">/**-q是倒排索引，当文件太多时，会有sort failure，需要去除-q选项*/</span><br><span class="line">（2）cscope -bkq -i cscope.files</span><br></pre></td></tr></table></figure>
 
 <p>使用cscope命令主要是使用以下两个命令：</p>
 <p>寻找指定文件</p>
