@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="冷静的博客">
+    <meta name="keyword"  content="远离浮躁，安心做事">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+        Description of the SDIO device debuging - Rivers的博客 | Rivers&#39;s Blog
+        
+    </title>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/aircloud.css">
+
+    
+<link rel="stylesheet" href="/css/gitment.css">
+
+    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
+    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
+    <!-- ga & ba script hoook -->
+    <script></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body>
+
+<div class="site-nav-toggle" id="site-nav-toggle">
+    <button>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+    </button>
+</div>
+
+<div class="index-about">
+    <i> The palest ink is better than the best memory </i>
+</div>
+
+<div class="index-container">
+    
+    <div class="index-left">
+        
+<div class="nav" id="nav">
+    <div class="avatar-name">
+        <div class="avatar ">
+            <img src="/img/face.jpg" />
+        </div>
+        <div class="name">
+            <i>Rivers 权</i>
+        </div>
+    </div>
+    <div class="contents" id="nav-content">
+        <ul>
+            <li >
+                <a href="/">
+                    <i class="iconfont icon-shouye1"></i>
+                    <span>主页</span>
+                </a>
+            </li>
+            <li >
+                <a href="/tags">
+                    <i class="iconfont icon-biaoqian1"></i>
+                    <span>标签</span>
+                </a>
+            </li>
+            <li >
+                <a href="/archive">
+                    <i class="iconfont icon-guidang2"></i>
+                    <span>存档</span>
+                </a>
+            </li>
+            <li >
+                <a href="/about/">
+                    <i class="iconfont icon-guanyu2"></i>
+                    <span>关于</span>
+                </a>
+            </li>
+            
+            <li>
+                <a id="search">
+                    <i class="iconfont icon-sousuo1"></i>
+                    <span>搜索</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    
+        <div id="toc" class="toc-article">
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E6%A3%80%E6%B5%8BSDIO%E8%AE%BE%E5%A4%87"><span class="toc-text">1.检测SDIO设备</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E8%8B%A5SDIO%E8%AE%BE%E5%A4%87%E6%9C%AA%E8%A2%AB%E5%8F%91%E7%8E%B0%EF%BC%8C%E5%88%99%E6%8C%89%E7%85%A7%E4%BB%A5%E4%B8%8B%E6%AD%A5%E9%AA%A4%E8%B0%83%E8%AF%95"><span class="toc-text">2.若SDIO设备未被发现，则按照以下步骤调试</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E6%A3%80%E7%B4%A2%E5%BD%93%E5%89%8D%E8%AE%BE%E5%A4%87%E6%A0%91"><span class="toc-text">3.检索当前设备树</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E6%A3%80%E6%9F%A5SDIO%E8%AE%BE%E5%A4%87%E5%AF%B9%E5%BA%94mmc%E6%80%BB%E7%BA%BF"><span class="toc-text">4.检查SDIO设备对应mmc总线</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E6%A3%80%E6%9F%A5SDIO%E6%A3%80%E6%B5%8B%E5%8A%9F%E8%83%BD%E6%98%AF%E5%90%A6%E4%BD%BF%E8%83%BD"><span class="toc-text">5.检查SDIO检测功能是否使能</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-%E6%A3%80%E6%9F%A5SDIO%E6%A3%80%E6%B5%8B%E9%98%B6%E6%AE%B5%E7%9A%84mmc%E6%80%BB%E7%BA%BF%E7%9A%84%E6%8C%87%E4%BB%A4%E6%B5%81"><span class="toc-text">6.检查SDIO检测阶段的mmc总线的指令流</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#6-1%E5%85%88%E4%BF%AE%E6%94%B9%E5%86%85%E6%A0%B8%E9%85%8D%E7%BD%AE%EF%BC%8C%E9%87%8D%E6%96%B0%E7%BC%96%E8%AF%91%E5%86%85%E6%A0%B8%E5%92%8C%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%EF%BC%9A"><span class="toc-text">6.1先修改内核配置，重新编译内核和设备驱动：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-2%E4%BD%BF%E8%83%BD-sys-kernel-debug%E4%B8%8B%E7%9A%84%E6%89%93%E5%8D%B0%E4%BF%A1%E6%81%AF"><span class="toc-text">6.2使能&#x2F;sys&#x2F;kernel&#x2F;debug下的打印信息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-3%E4%BD%BF%E8%83%BDmmc%E8%AF%B7%E6%B1%82%E8%BF%BD%E8%B8%AA%EF%BC%9A"><span class="toc-text">6.3使能mmc请求追踪：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-4%E7%BB%91%E5%AE%9Ammc-bus%EF%BC%9A%E4%BE%9D%E6%AC%A1%E6%89%A7%E8%A1%8Csdio-reg-init-sh%E5%92%8Cmmc-load-sh"><span class="toc-text">6.4绑定mmc bus：依次执行sdio_reg_init.sh和mmc_load.sh</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-5%E8%BF%BD%E8%B8%AAMMC%E4%BF%A1%E6%81%AF%EF%BC%9A"><span class="toc-text">6.5追踪MMC信息：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-%E5%8A%A0%E8%BD%BD%E7%BD%91%E5%8D%A1%E9%A9%B1%E5%8A%A8"><span class="toc-text">7.加载网卡驱动</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#8-%E8%A7%A3%E9%87%8A%E7%AC%AC6%E8%8A%82%E7%AC%AC%EF%BC%884%EF%BC%89%E6%AD%A5%E4%B8%ADsdio-reg-init-sh%E8%84%9A%E6%9C%AC%E4%BD%9C%E7%94%A8"><span class="toc-text">8.解释第6节第（4）步中sdio_reg_init.sh脚本作用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#9-%E8%A7%A3%E9%87%8A%E7%AC%AC%E4%BA%94%E8%8A%82%E7%AC%AC%EF%BC%884%EF%BC%89%E6%AD%A5%E4%B8%ADmmc-load-sh%E5%9C%A8%E7%B3%BB%E7%BB%9F%E5%90%AF%E5%8A%A8%E6%97%B6%E7%9A%84%E8%B0%83%E7%94%A8%E9%80%BB%E8%BE%91"><span class="toc-text">9.解释第五节第（4）步中mmc_load.sh在系统启动时的调用逻辑</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#10-%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE%E6%9C%89%EF%BC%9A"><span class="toc-text">10.参考文献有：</span></a>
+</div>
+    
+</div>
+
+
+<div class="search-field" id="search-field">
+    <div class="search-container">
+        <div class="search-input">
+            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
+            <input id="search-input"/>
+            <span id="begin-search">搜索</span>
+        </div>
+        <div class="search-result-container" id="search-result-container">
+
+        </div>
+    </div>
+</div>
+
+        <div class="index-about-mobile">
+            <i> The palest ink is better than the best memory </i>
+        </div>
+    </div>
+    
+    <div class="index-middle">
+        <!-- Main Content -->
+        
+
+
+<div class="post-container">
+    <div class="post-title">
+        Description of the SDIO device debuging
+    </div>
+
+    <div class="post-meta">
+        <span class="attr">发布于：<span>2022-05-18 17:31:23</span></span>
+        
+        </span>
+        <span class="attr">访问：<span id="busuanzi_value_page_pv"></span>
+</span>
+</span>
+    </div>
+    <div class="post-content ">
+        <p>platform：hi3556av200</p>
+<p>SDIO device：rtl8189fs</p>
+<h2 id="1-检测SDIO设备"><a href="#1-检测SDIO设备" class="headerlink" title="1.检测SDIO设备"></a>1.检测SDIO设备</h2><p>  执行cat /proc/mci/mci_info</p>
+<p>  若出现下列信息，则表示SD卡和SDIO设备均被探测到。</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">MCI0:</span> <span class="string">pluged_connected</span></span><br><span class="line">        <span class="attr">Type:</span> <span class="string">SD</span> <span class="string">card(SDHC)</span></span><br><span class="line">        <span class="attr">Mode:</span> <span class="string">UHS</span> <span class="string">SDR104</span> </span><br><span class="line">        <span class="attr">Speed Class:</span> <span class="string">Class</span> <span class="number">10</span></span><br><span class="line">        <span class="attr">Uhs Speed Grade:</span> <span class="string">10MB/sec</span> <span class="string">and</span> <span class="string">above(1h)</span></span><br><span class="line">        <span class="attr">Host work clock:</span> <span class="string">150MHz</span></span><br><span class="line">        <span class="attr">Card support clock:</span> <span class="string">150MHz</span></span><br><span class="line">        <span class="attr">Card work clock:</span> <span class="string">150MHz</span></span><br><span class="line">        <span class="attr">Card error count:</span> <span class="number">0</span></span><br><span class="line"><span class="attr">MCI1:</span> <span class="string">pluged_connected</span></span><br><span class="line">        <span class="attr">Type: SDIO card Mode:</span> <span class="string">HS</span> <span class="string">SDR104</span> </span><br><span class="line">        <span class="attr">Speed Class:</span> <span class="string">Class</span> <span class="number">0</span></span><br><span class="line">        <span class="attr">Uhs Speed Grade:</span> <span class="string">Less</span> <span class="string">than</span> <span class="string">10MB/sec(0h)</span></span><br><span class="line">        <span class="attr">Host work clock:</span> <span class="string">50MHz</span></span><br><span class="line">        <span class="attr">Card support clock:</span> <span class="string">50MHz</span></span><br><span class="line">        <span class="attr">Card work clock:</span> <span class="string">50MHz</span></span><br><span class="line">        <span class="attr">Card error count:</span> <span class="number">0</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="2-若SDIO设备未被发现，则按照以下步骤调试"><a href="#2-若SDIO设备未被发现，则按照以下步骤调试" class="headerlink" title="2.若SDIO设备未被发现，则按照以下步骤调试"></a>2.若SDIO设备未被发现，则按照以下步骤调试</h2><ol>
+<li>检索当前设备树</li>
+<li>检查SDIO设备对应mmc总线</li>
+<li>检查SDIO检测功能是否使能</li>
+<li>检查SDIO检测阶段的mmc总线的指令流</li>
+</ol>
+<p>  接下来分点介绍各个步骤</p>
+<h2 id="3-检索当前设备树"><a href="#3-检索当前设备树" class="headerlink" title="3.检索当前设备树"></a>3.检索当前设备树</h2><p>  开发板上路径/sys/firmware/devicetree/base对应了设备树信息</p>
+<ol>
+<li>压缩tar -zcf /app/data/device_tree.tar.gz /sys/firmware/devicetree/base</li>
+<li>在虚拟机上使用解压后使用DTC工具解析：dtc –sort -I fs -O dts sys/firmware/devicetree/base/ &gt; device_tree.out</li>
+<li>比较device_tree.out与dts、dtsi设备树文件，确保SDIO部分一致</li>
+</ol>
+<h2 id="4-检查SDIO设备对应mmc总线"><a href="#4-检查SDIO设备对应mmc总线" class="headerlink" title="4.检查SDIO设备对应mmc总线"></a>4.检查SDIO设备对应mmc总线</h2><p>  在设备树中，SDIO网卡对应了SDIO1</p>
+<p>  对应dtsi文件中mmc2：</p>
+<figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">mmc2:</span> himci.<span class="class">SD@0x10020000 </span>&#123;</span><br><span class="line">        compatible = <span class="string">&quot;hisilicon,hi3556v200-himci&quot;</span>;</span><br><span class="line">        reg = <span class="params">&lt;<span class="number">0x10020000</span> <span class="number">0x1000</span>&gt;</span>;</span><br><span class="line">        interrupts = <span class="params">&lt;<span class="number">0</span> <span class="number">31</span> <span class="number">4</span>&gt;</span>;</span><br><span class="line">        cap-sdio-irq;</span><br><span class="line">        clocks = <span class="params">&lt;<span class="variable">&amp;clock</span> HI3556V200_MMC2_CLK&gt;</span>;</span><br><span class="line">        clock-names = <span class="string">&quot;mmc_clk&quot;</span>;</span><br><span class="line">        resets = <span class="params">&lt;<span class="variable">&amp;clock</span> <span class="number">0x154</span> <span class="number">0</span>&gt;</span>;</span><br><span class="line">        reset-names = <span class="string">&quot;mmc_reset&quot;</span>;</span><br><span class="line">        max-frequency = <span class="params">&lt;<span class="number">100000000</span>&gt;</span>;</span><br><span class="line">        bus-width = <span class="params">&lt;<span class="number">4</span>&gt;</span>;</span><br><span class="line">        cap-sd-highspeed;</span><br><span class="line">        sd-uhs-sdr12;</span><br><span class="line">        sd-uhs-sdr25;</span><br><span class="line">        sd-uhs-sdr50;</span><br><span class="line">        sd-uhs-sdr104;</span><br><span class="line">        devid = <span class="params">&lt;<span class="number">2</span>&gt;</span>;</span><br><span class="line">        status = <span class="string">&quot;disabled&quot;</span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h2 id="5-检查SDIO检测功能是否使能"><a href="#5-检查SDIO检测功能是否使能" class="headerlink" title="5.检查SDIO检测功能是否使能"></a>5.检查SDIO检测功能是否使能</h2><p>  这个在海思的平台上，由mmc_load.sh中insmod himci.ko等实现，具体可以参考内核中himci目录下代码</p>
+<h2 id="6-检查SDIO检测阶段的mmc总线的指令流"><a href="#6-检查SDIO检测阶段的mmc总线的指令流" class="headerlink" title="6.检查SDIO检测阶段的mmc总线的指令流"></a>6.检查SDIO检测阶段的mmc总线的指令流</h2><p>  首先，SDIO检测只会在绑定mmc总线的时候进行。开机时会进行总线绑定（bind bus），或者手动bind和unbind bus.</p>
+<p>  开机时追踪比较麻烦，所以优先选择手动bind和unbind mmc bus.</p>
+<p>  具体操作为：</p>
+<h3 id="6-1先修改内核配置，重新编译内核和设备驱动："><a href="#6-1先修改内核配置，重新编译内核和设备驱动：" class="headerlink" title="6.1先修改内核配置，重新编译内核和设备驱动："></a>6.1先修改内核配置，重新编译内核和设备驱动：</h3><figure class="highlight xl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">K<span class="function"><span class="title">ernel</span> Hacking -&gt;</span> T<span class="function"><span class="title">racers</span> -&gt;</span> FUNCTION_TRACER</span><br><span class="line">K<span class="function"><span class="title">ernel</span> Hacking -&gt;</span> T<span class="function"><span class="title">racers</span> -&gt;</span> FUNCTION_GRAPH_TRACER (<span class="keyword">if</span> possible)</span><br><span class="line">K<span class="function"><span class="title">ernel</span> Hacking -&gt;</span> T<span class="function"><span class="title">racers</span> -&gt;</span> STACK_TRACER(Trace max stack)</span><br><span class="line">K<span class="function"><span class="title">ernel</span> Hacking -&gt;</span> T<span class="function"><span class="title">racers</span> -&gt;</span> DYNAMIC_FTRACE(enable/disable ftrace tracepoints dynamically)</span><br></pre></td></tr></table></figure>
+
+<h3 id="6-2使能-sys-kernel-debug下的打印信息"><a href="#6-2使能-sys-kernel-debug下的打印信息" class="headerlink" title="6.2使能/sys/kernel/debug下的打印信息"></a>6.2使能/sys/kernel/debug下的打印信息</h3><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mount -t debugfs none <span class="regexp">/sys/</span>kernel/debug</span><br></pre></td></tr></table></figure>
+
+<h3 id="6-3使能mmc请求追踪："><a href="#6-3使能mmc请求追踪：" class="headerlink" title="6.3使能mmc请求追踪："></a>6.3使能mmc请求追踪：</h3><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">echo <span class="number">1</span> &gt; <span class="regexp">/sys/</span>kernel<span class="regexp">/debug/</span>tracing<span class="regexp">/events/mm</span>c<span class="regexp">/mmc_request_done/</span>enable</span><br><span class="line">echo <span class="string">&#x27;cmd_opcode != 53&#x27;</span> &gt; <span class="regexp">/sys/</span>kernel<span class="regexp">/debug/</span>tracing<span class="regexp">/events/mm</span>c<span class="regexp">/mmc_request_done/</span>filter</span><br></pre></td></tr></table></figure>
+
+<h3 id="6-4绑定mmc-bus：依次执行sdio-reg-init-sh和mmc-load-sh"><a href="#6-4绑定mmc-bus：依次执行sdio-reg-init-sh和mmc-load-sh" class="headerlink" title="6.4绑定mmc bus：依次执行sdio_reg_init.sh和mmc_load.sh"></a>6.4绑定mmc bus：依次执行sdio_reg_init.sh和mmc_load.sh</h3><p>  解绑和绑定mmc bus通用的做法是：</p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">echo <span class="number">10020000</span>.himci.SD  &gt; <span class="regexp">/sys/</span>bus<span class="regexp">/platform/</span>drivers<span class="regexp">/himci/u</span>nbind <span class="number">2</span>&gt;<span class="regexp">/dev/</span><span class="keyword">null</span></span><br><span class="line">sleep <span class="number">2</span></span><br><span class="line">echo <span class="number">10020000</span>.himci.SD  &gt; <span class="regexp">/sys/</span>bus<span class="regexp">/platform/</span>drivers<span class="regexp">/himci/</span>bind <span class="number">2</span>&gt;<span class="regexp">/dev/</span><span class="keyword">null</span></span><br></pre></td></tr></table></figure>
+
+<p>  解绑和绑定SDIO设备后，himci会对SDIO设备重新探测，即第五步就会打印出对应的commands流</p>
+<h3 id="6-5追踪MMC信息："><a href="#6-5追踪MMC信息：" class="headerlink" title="6.5追踪MMC信息："></a>6.5追踪MMC信息：</h3><figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat <span class="regexp">/sys/</span>kernel<span class="regexp">/debug/</span>tracing/trace_pipe | <span class="keyword">grep</span> mmc1 &amp;</span><br></pre></td></tr></table></figure>
+
+<p>  其实这一步需要在第4步之前执行，追踪第4步中的信息，不然信息会遗失</p>
+<p>  3556上是第5步执行以后，执行cat /proc/mci/mci_info，便检测到SDIO设备</p>
+<h2 id="7-加载网卡驱动"><a href="#7-加载网卡驱动" class="headerlink" title="7.加载网卡驱动"></a>7.加载网卡驱动</h2><figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">insmod</span> rtl<span class="number">8189</span>FS.ko</span><br></pre></td></tr></table></figure>
+
+<p>  驱动会与SDIO设备进行匹配并绑定。若绑定成功，执行ifconfig -a，会显示WLAN0设备：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">wlan0</span>     Link encap:Ethernet  HWaddr A<span class="number">0</span>:<span class="number">9</span>F:<span class="number">10</span>:<span class="number">41</span>:<span class="number">8</span>B:D<span class="number">5</span>  </span><br><span class="line">          <span class="attribute">BROADCAST</span> MULTICAST  MTU:<span class="number">1500</span>  Metric:<span class="number">1</span></span><br><span class="line">          <span class="attribute">RX</span> packets:<span class="number">0</span> errors:<span class="number">0</span> dropped:<span class="number">0</span> overruns:<span class="number">0</span> frame:<span class="number">0</span></span><br><span class="line">          <span class="attribute">TX</span> packets:<span class="number">0</span> errors:<span class="number">0</span> dropped:<span class="number">0</span> overruns:<span class="number">0</span> carrier:<span class="number">0</span></span><br><span class="line">          <span class="attribute">collisions</span>:<span class="number">0</span> txqueuelen:<span class="number">1000</span> </span><br><span class="line">          <span class="attribute">RX</span> bytes:<span class="number">0</span> (<span class="number">0</span>.<span class="number">0</span> B)  TX bytes:<span class="number">0</span> (<span class="number">0</span>.<span class="number">0</span> B)</span><br></pre></td></tr></table></figure>
+
+<h2 id="8-解释第6节第（4）步中sdio-reg-init-sh脚本作用"><a href="#8-解释第6节第（4）步中sdio-reg-init-sh脚本作用" class="headerlink" title="8.解释第6节第（4）步中sdio_reg_init.sh脚本作用"></a>8.解释第6节第（4）步中sdio_reg_init.sh脚本作用</h2><p>  SDIO1的管脚分为：SDIO1_CCLK_OUT、SDIO1_CCMD、SDIO1_CDATA0、SDIO1_CDATA1、SDIO1_CDATA2、SDIO1_CDATA3共6个管脚</p>
+<p>  参考Hi3556V200_PINOUT_CN.xlsx文档，发现SDIO管脚默认配置为了GPIO管脚。</p>
+<p>  因此使用海思的himm工具，修改管脚复用寄存器的值，将以上六个管脚配置为SDIO管脚，而不是GPIO。</p>
+<h2 id="9-解释第五节第（4）步中mmc-load-sh在系统启动时的调用逻辑"><a href="#9-解释第五节第（4）步中mmc-load-sh在系统启动时的调用逻辑" class="headerlink" title="9.解释第五节第（4）步中mmc_load.sh在系统启动时的调用逻辑"></a>9.解释第五节第（4）步中mmc_load.sh在系统启动时的调用逻辑</h2><p>  Linux系统启动时候，调用顺序/etc/init.d/rcS –&gt; S80mpp –&gt; /app/bootapp –&gt; ./mmc_load.sh</p>
+<h1 id="10-参考文献有："><a href="#10-参考文献有：" class="headerlink" title="10.参考文献有："></a>10.参考文献有：</h1><ul>
+<li><p>Hi3556V200_PINOUT_CN.xlsx</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://www.silabs.com/community/wireless/wi-fi/knowledge-base.entry.html/2019/01/03/linux_sdio_detection-ajSx">https://www.silabs.com/community/wireless/wi-fi/knowledge-base.entry.html/2019/01/03/linux_sdio_detection-ajSx</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://www.silabs.com/community/wireless/wi-fi/knowledge-base.entry.html/2020/01/30/linux_device_treedebugging-WnIr">https://www.silabs.com/community/wireless/wi-fi/knowledge-base.entry.html/2020/01/30/linux_device_treedebugging-WnIr</a></p>
+</li>
+<li><p>Wifi使用指南.pdf</p>
+</li>
+</ul>
+
+        
+            <div class="donate-container">
+    <div class="donate-button">
+        <button id="donate-button">赞赏</button>
+    </div>
+    <div class="donate-img-container hide" id="donate-img-container">
+        <img id="donate-img" src="" data-src="/img/donate.jpg">
+        <p> 感谢鼓励 </p>
+    </div>
+</div>
+        
+        <br />
+        <div id="comment-container">
+        </div>
+        <div id="disqus_thread"></div>
+
+        <div id="lv-container">
+        </div>
+
+    </div>
+</div>
+
+    </div>
+</div>
+
+
+<footer class="footer">
+    <ul class="list-inline text-center">
+        
+        
+        <li>
+            <a target="_blank" href="https://www.zhihu.com/people/何Rivers">
+                            <span class="fa-stack fa-lg">
+                                 <i class="iconfont icon-zhihu"></i>
+                            </span>
+            </a>
+        </li>
+        
+
+        
+
+        
+
+        
+        <li>
+            <a target="_blank"  href="https://github.com/RiversWang">
+                            <span class="fa-stack fa-lg">
+                                <i class="iconfont icon-github"></i>
+                            </span>
+            </a>
+        </li>
+        
+
+        
+
+    </ul>
+    
+    <p>
+        <span>/</span>
+        
+        <span><a target="_blank" rel="noopener" href="https://zhihu.com/people/he-quan-qi">知乎</a></span>
+        <span>/</span>
+        
+        <span><a href="rivers.sparksfly@gamil.com">Gmail</a></span>
+        <span>/</span>
+        
+        <span><a href="#">It helps SEO</a></span>
+        <span>/</span>
+        
+    </p>
+    
+    <p>
+        <span id="busuanzi_container_site_pv">
+            <span id="busuanzi_value_site_pv"></span>PV
+        </span>
+        <span id="busuanzi_container_site_uv">
+            <span id="busuanzi_value_site_uv"></span>UV
+        </span>
+        Created By <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>  Theme <a target="_blank" rel="noopener" href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a></p>
+</footer>
+
+
+
+
+</body>
+
+<script>
+    // We expose some of the variables needed by the front end
+    window.hexo_search_path = "search.json"
+    window.hexo_root = "/"
+    window.isPost = true
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+
+<script src="/js/index.js"></script>
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+    <script>
+        /**
+         *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+         *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+        */
+        if( '' || '')
+        var disqus_config = function () {
+            this.page.url = '';  // Replace PAGE_URL with your page's canonical URL variable
+            this.page.identifier = ''; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+        };
+
+        (function() { // DON'T EDIT BELOW THIS LINE
+            var d = document, s = d.createElement('script');
+            s.src = 'https://riverswang.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();
+    </script>
+
+
+
+</html>

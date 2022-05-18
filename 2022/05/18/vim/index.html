@@ -11,7 +11,7 @@
 
     <title>
         
-        Hexo_add_del - Rivers的博客 | Rivers&#39;s Blog
+        vim - Rivers的博客 | Rivers&#39;s Blog
         
     </title>
 
@@ -93,7 +93,7 @@
     </div>
     
         <div id="toc" class="toc-article">
-    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Hexo%E6%96%87%E7%AB%A0%E5%A2%9E%E5%87%8F%E6%AD%A5%E9%AA%A4%E8%AE%B0%E5%BD%95"><span class="toc-text">Hexo文章增减步骤记录</span></a></li></ol>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#2-%E5%A4%9A%E8%A1%8C%E6%B3%A8%E9%87%8A"><span class="toc-text">2.多行注释</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3-%E5%85%A8%E5%B1%80%E6%9B%BF%E6%8D%A2"><span class="toc-text">3.全局替换</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4-cscope"><span class="toc-text">4.cscope</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#5-taglist"><span class="toc-text">5.taglist</span></a></li></ol>
 </div>
     
 </div>
@@ -124,11 +124,11 @@
 
 <div class="post-container">
     <div class="post-title">
-        Hexo_add_del
+        vim
     </div>
 
     <div class="post-meta">
-        <span class="attr">发布于：<span>2021-01-14 01:33:24</span></span>
+        <span class="attr">发布于：<span>2022-05-18 17:32:14</span></span>
         
         </span>
         <span class="attr">访问：<span id="busuanzi_value_page_pv"></span>
@@ -136,14 +136,84 @@
 </span>
     </div>
     <div class="post-content ">
-        <h1 id="Hexo文章增减步骤记录"><a href="#Hexo文章增减步骤记录" class="headerlink" title="Hexo文章增减步骤记录"></a>Hexo文章增减步骤记录</h1><p>@(Rivers Blog)[Hexo, Windows, Markdown]</p>
-<p><strong>Hexo Blog</strong>最近刚刚开始使用Hexo，记录一下增加和删除文章的操作</p>
-<ul>
-<li><p><strong>添加文章</strong> ：<br>1 在blog目录下运行bash shell，然后执行hexo n “title”，在_post目录下会生成title.md<br>2 在markdown下编辑title.md，编辑结束，保存<br>3 hexo clean<br>4 hexo g<br>5 hexo d</p>
-</li>
-<li><p><strong>删除文章</strong> ：<br>1 删除_post目录下的title.md<br>3 hexo clean<br>4 hexo g<br>5 hexo d -g</p>
-</li>
-</ul>
+        <p>1.常见基本命令</p>
+<p>主要介绍了一些我经常用到的命令~熟能生巧</p>
+<table>
+<thead>
+<tr>
+<th>vim操作</th>
+<th>意义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>v y p</td>
+<td>v进入可视化模式，再按y复制，最后p粘贴</td>
+</tr>
+<tr>
+<td>/</td>
+<td>搜索</td>
+</tr>
+<tr>
+<td>u</td>
+<td>撤销上一次操作</td>
+</tr>
+<tr>
+<td>gg</td>
+<td>移动到文件开头</td>
+</tr>
+<tr>
+<td>shift+g</td>
+<td>移动到文件结尾</td>
+</tr>
+<tr>
+<td>vsp</td>
+<td>纵向切分窗口</td>
+</tr>
+<tr>
+<td>dd</td>
+<td>删除当前行</td>
+</tr>
+<tr>
+<td>ctrl+f</td>
+<td>forward向前翻页</td>
+</tr>
+<tr>
+<td>ctrl+b</td>
+<td>backward向后翻页</td>
+</tr>
+<tr>
+<td>:noh</td>
+<td>取消所有高亮</td>
+</tr>
+</tbody></table>
+<h1 id="2-多行注释"><a href="#2-多行注释" class="headerlink" title="2.多行注释"></a>2.多行注释</h1><p>加多行注释</p>
+<p>:起始行号，结束行号s/^/注释符/g</p>
+<p>去除多行注释</p>
+<p>:起始行号，结束行号s/^注释符//g</p>
+<h1 id="3-全局替换"><a href="#3-全局替换" class="headerlink" title="3.全局替换"></a>3.全局替换</h1><p>For example，将文件中所有的foo替换为bar</p>
+<p>:%s/foo/bar/g</p>
+<h1 id="4-cscope"><a href="#4-cscope" class="headerlink" title="4.cscope"></a>4.cscope</h1><p>建立cscope的数据库</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">（1）find . -name &#x27;*.h&#x27; -o -name &#x27;*.c&#x27; -o -name &#x27;*.lua&#x27; -o -name &#x27;*.cpp&#x27; -o -name &#x27;*.S&#x27; &gt; cscope.files</span><br><span class="line">/**-q是倒排索引，当文件太多时，会有sort failure，需要去除-q选项*/</span><br><span class="line">（2）cscope -bkq -i cscope.files</span><br></pre></td></tr></table></figure>
+
+<p>使用cscope命令主要是使用以下两个命令：</p>
+<p>寻找指定文件</p>
+<p>:cs find f target.c</p>
+<p>寻找指定字符串</p>
+<p>:cs find t target_string</p>
+<p>为了方便查找</p>
+<p>在~/.vimrc中添加set cscopequickfix=s-,c-,d-,i-,t-,e-</p>
+<p>这样通过:cs find XXX以后，会立即跳转到第一个找到该符号的地方</p>
+<p>然后可以通过:copen来打开quickfix窗口，在窗口中会显示所有的搜索结果</p>
+<h1 id="5-taglist"><a href="#5-taglist" class="headerlink" title="5.taglist"></a>5.taglist</h1><p>跳转到变量或函数的定义处</p>
+<p>Ctrl + ]</p>
+<p>返回到跳转前的位置</p>
+<p>Ctrl + t </p>
+<p>tag stack 向前</p>
+<p>ctrl+o</p>
+<p>tag stack 向后</p>
+<p>ctrl+i</p>
+<p>打开侧边的tag目录(再执行一遍就会关闭)</p>
+<p>:wm</p>
 
         
             <div class="donate-container">
