@@ -93,7 +93,7 @@
     </div>
     
         <div id="toc" class="toc-article">
-    
+    <ol class="toc"><li class="toc-item toc-level-6"><a class="toc-link" href="#%E9%A1%B5%E6%8F%8F%E8%BF%B0%E7%AC%A6"><span class="toc-text">页描述符</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#Buddy-system"><span class="toc-text">Buddy system</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#%E6%AF%8FCPU%E9%A1%B5%E6%A1%86%E9%AB%98%E9%80%9F%E7%BC%93%E5%AD%98"><span class="toc-text">每CPU页框高速缓存</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#Slab%E5%88%86%E9%85%8D%E5%99%A8"><span class="toc-text">Slab分配器</span></a></li></ol>
 </div>
     
 </div>
@@ -136,8 +136,20 @@
 </span>
     </div>
     <div class="post-content ">
-        <p>页描述符</p>
-<p>内核用页描述符来记录页框当前的状态。所有的页描述符存放在mem_map数组中，因为每个描述符长度是32字节（Linux kernel中一般采用4KByte的页框大小），所以mem_map所需要的空间略小于整个RAM的1%。</p>
+        <h6 id="页描述符"><a href="#页描述符" class="headerlink" title="页描述符"></a>页描述符</h6><p>内核用页描述符来记录页框当前的状态。所有的页描述符存放在mem_map数组中，因为每个描述符长度是32字节（Linux kernel中一般采用4KByte的页框大小），所以mem_map所需要的空间略小于整个RAM的1%。</p>
+<h6 id="Buddy-system"><a href="#Buddy-system" class="headerlink" title="Buddy system"></a>Buddy system</h6><p>Buddy system伙夫系统是为了解决外碎片化（external fragmentation）的问题。频繁地请求和释放不同大小的一组连续页框，必然导致在已经分配的块内散布了很多小块的空闲页框，由此带来的问题是，即使有足够的空闲页框可以满足请求，但是无法分配一个大块的连续页框 。</p>
+<p>Buddy System把所有空闲页分为11个块链表，每个链表分别包含大小为1,2,4,8,16,32,64,128,256,512和1024个连续得框页。1024个框页的最大请求就对应着4MB大小的连续RAM块。每一个块的第一个框页的物理地址是该块大小的整数倍。例如，大小为16个框页的块，其起始地址是16*4096的整数倍。</p>
+<p>对应内核的接口是__rmqueue()和__free_pages_bulk()。</p>
+<p>Buddy system采用页框为基本内存区，这适合于对大块内存的请求。</p>
+<h6 id="每CPU页框高速缓存"><a href="#每CPU页框高速缓存" class="headerlink" title="每CPU页框高速缓存"></a>每CPU页框高速缓存</h6><p>内核经常请求和释放单个页框，为了提升系统性能，每个内存管理区定义了一个“每CPU”页框高速缓存。</p>
+<p>对应内核的接口是buffered_rmqueue()，free_cold_page()和free_hot_page()。</p>
+<h6 id="Slab分配器"><a href="#Slab分配器" class="headerlink" title="Slab分配器"></a>Slab分配器</h6><p>对于小内存区，以字节为单位的内存分配，内核使用Slab分配器，来在同一页框中分配小内存区。</p>
+<p>Slab分配器是为了解决内碎片（internal fragmentation）问题，内碎片的产生主要是由于请求内存的大小与分配给它的大小不匹配造成的。解决这个问题的办法就是按需分配，请求多少，分配多少。</p>
+<p>Slab分配器把Slab放到高速缓存（软件概念，对应数据结构为kmem_cache_t。</p>
+<p>高速缓存分为普通和专业高速缓存。普通高速缓存只由slab分配器用于自己的目的，而专业高速缓存由内核的其余部分使用。</p>
+<p>当slab分配器创建新的slab是，它依靠分区页框分配器来获得一组连续的空闲页框。（kmem_getpages）</p>
+<p>在相反的操作中，调用kmem_freepages()函数来释放分配给slab的页框。</p>
+<p>Slab着色</p>
 
         
             <div class="donate-container">
