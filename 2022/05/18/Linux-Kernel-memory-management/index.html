@@ -93,7 +93,7 @@
     </div>
     
         <div id="toc" class="toc-article">
-    <ol class="toc"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-%E7%89%A9%E7%90%86%E9%AB%98%E9%80%9F%E7%BC%93%E5%AD%98"><span class="toc-text">1.物理高速缓存</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-TLB"><span class="toc-text">2. TLB</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#2-1-TLB%E7%9A%84%E5%88%B7%E6%96%B0"><span class="toc-text">2.1 TLB的刷新</span></a></li></ol></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-%E7%89%A9%E7%90%86%E5%86%85%E5%AD%98%E5%88%86%E5%B8%83"><span class="toc-text">3.物理内存分布</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#3-1-%E8%BF%9B%E7%A8%8B%E9%A1%B5%E8%A1%A8"><span class="toc-text">3.1 进程页表</span></a></li></ol></li></ol>
+    <ol class="toc"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-%E7%89%A9%E7%90%86%E9%AB%98%E9%80%9F%E7%BC%93%E5%AD%98"><span class="toc-text">1.物理高速缓存</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-TLB"><span class="toc-text">2. TLB</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#2-1-TLB%E7%9A%84%E5%88%B7%E6%96%B0"><span class="toc-text">2.1 TLB的刷新</span></a></li></ol></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-%E7%89%A9%E7%90%86%E5%86%85%E5%AD%98%E5%88%86%E5%B8%83"><span class="toc-text">3.物理内存分布</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#3-1-%E8%BF%9B%E7%A8%8B%E9%A1%B5%E8%A1%A8"><span class="toc-text">3.1 进程页表</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#TLB-vs-%E7%A1%AC%E4%BB%B6%E9%AB%98%E9%80%9F%E7%BC%93%E5%AD%98"><span class="toc-text">TLB vs 硬件高速缓存</span></a></li></ol></li></ol>
 </div>
     
 </div>
@@ -152,6 +152,8 @@
 <p>（2）当在一个普通进程和一个内核线程之间执行进程切换的时候。内核线程并不拥有自己的页表集，它们使用刚在CPU上执行过的普通进程的页表集。</p>
 <h5 id="3-物理内存分布"><a href="#3-物理内存分布" class="headerlink" title="3.物理内存分布"></a>3.物理内存分布</h5><h6 id="3-1-进程页表"><a href="#3-1-进程页表" class="headerlink" title="3.1 进程页表"></a>3.1 进程页表</h6><p>对于X86，从0x00000000到0xbfffffff（3GB），无论进程运行在用户态还是内核态都可以寻址。</p>
 <p>从0xc0000000到0xffffffff的线性地址（1GB），只有内核态的进程才可以寻址。</p>
+<h6 id="TLB-vs-硬件高速缓存"><a href="#TLB-vs-硬件高速缓存" class="headerlink" title="TLB vs 硬件高速缓存"></a>TLB vs 硬件高速缓存</h6><p>比较好的一个英文解释。</p>
+<p>Cache stores the actual contents of memory. TLB on the other hand, stores only mapping. TLB speeds up the process of locating the operands in the memory. Cache speeds up of reading those operands by copying them to a faster physical memory.</p>
 
         
             <div class="donate-container">
