@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="冷静的博客">
+    <meta name="keyword"  content="远离浮躁，安心做事">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+        利用QEMU模拟ARM64的开发环境 - Rivers的博客 | Rivers&#39;s Blog
+        
+    </title>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/aircloud.css">
+
+    
+<link rel="stylesheet" href="/css/gitment.css">
+
+    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
+    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
+    <!-- ga & ba script hoook -->
+    <script></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body>
+
+<div class="site-nav-toggle" id="site-nav-toggle">
+    <button>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+    </button>
+</div>
+
+<div class="index-about">
+    <i> The palest ink is better than the best memory </i>
+</div>
+
+<div class="index-container">
+    
+    <div class="index-left">
+        
+<div class="nav" id="nav">
+    <div class="avatar-name">
+        <div class="avatar ">
+            <img src="/img/face.jpg" />
+        </div>
+        <div class="name">
+            <i>Rivers 权</i>
+        </div>
+    </div>
+    <div class="contents" id="nav-content">
+        <ul>
+            <li >
+                <a href="/">
+                    <i class="iconfont icon-shouye1"></i>
+                    <span>主页</span>
+                </a>
+            </li>
+            <li >
+                <a href="/tags">
+                    <i class="iconfont icon-biaoqian1"></i>
+                    <span>标签</span>
+                </a>
+            </li>
+            <li >
+                <a href="/archive">
+                    <i class="iconfont icon-guidang2"></i>
+                    <span>存档</span>
+                </a>
+            </li>
+            <li >
+                <a href="/about/">
+                    <i class="iconfont icon-guanyu2"></i>
+                    <span>关于</span>
+                </a>
+            </li>
+            
+            <li>
+                <a id="search">
+                    <i class="iconfont icon-sousuo1"></i>
+                    <span>搜索</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    
+        <div id="toc" class="toc-article">
+    <ol class="toc"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-QEMU%E7%AE%80%E4%BB%8B"><span class="toc-text">1.QEMU简介</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-%E5%AE%89%E8%A3%85GCC%E5%B7%A5%E5%85%B7%E9%93%BE"><span class="toc-text">2.安装GCC工具链</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-%E7%BC%96%E8%AF%91%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F"><span class="toc-text">3.编译文件系统</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#4-%E7%BC%96%E8%AF%91%E5%86%85%E6%A0%B8"><span class="toc-text">4.编译内核</span></a></li></ol>
+</div>
+    
+</div>
+
+
+<div class="search-field" id="search-field">
+    <div class="search-container">
+        <div class="search-input">
+            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
+            <input id="search-input"/>
+            <span id="begin-search">搜索</span>
+        </div>
+        <div class="search-result-container" id="search-result-container">
+
+        </div>
+    </div>
+</div>
+
+        <div class="index-about-mobile">
+            <i> The palest ink is better than the best memory </i>
+        </div>
+    </div>
+    
+    <div class="index-middle">
+        <!-- Main Content -->
+        
+
+
+<div class="post-container">
+    <div class="post-title">
+        利用QEMU模拟ARM64的开发环境
+    </div>
+
+    <div class="post-meta">
+        <span class="attr">发布于：<span>2022-05-31 14:04:30</span></span>
+        
+        </span>
+        <span class="attr">访问：<span id="busuanzi_value_page_pv"></span>
+</span>
+</span>
+    </div>
+    <div class="post-content ">
+        <h5 id="1-QEMU简介"><a href="#1-QEMU简介" class="headerlink" title="1.QEMU简介"></a>1.QEMU简介</h5><p>A generic and open source machine emulator and virtualizer</p>
+<p>先安装Ubuntu22.04，然后我们手动在Ubuntu上安装最新的QUME，因为Ubuntu上自带的QUME不是最新版，所以不要用apt-get install安装。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">wget https://download.qemu.org/qemu-7.0.0.tar.xz</span><br><span class="line">tar xvJf qemu-7.0.0.tar.xz</span><br><span class="line">cd qemu-7.0.0</span><br><span class="line">./configure</span><br><span class="line">make</span><br></pre></td></tr></table></figure>
+
+<h5 id="2-安装GCC工具链"><a href="#2-安装GCC工具链" class="headerlink" title="2.安装GCC工具链"></a>2.安装GCC工具链</h5><p>这里不要用apt-get install工具链，最好手动安装到一个自定义的位置。不然容易和Ubuntu自带的GCC工具链混淆。</p>
+<p>推荐去Linaro下载，版本的话不要太新的，容易出BUG。</p>
+<p>这里我们直接去Linaro官网下载“<a target="_blank" rel="noopener" href="https://releases.linaro.org/components/toolchain/binaries/6.3-2017.02/aarch64-linux-gnu/gcc-linaro-6.3.1-2017.02-x86_64_aarch64-linux-gnu.tar.xz"> gcc-linaro-6.3.1-2017.02-x86_64_aarch64-linux-gnu.tar.xz</a>”。这里的aarch就是指的ARM64。</p>
+<p>然后在ubuntu下tar -xf，就可以得到整个工具链，接着把这个编译器可执行文件的路径添加到~/.bashrc里面</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PATH=$PATH:/home/quahe/Desktop/QEMU_arch64/gcc-linaro-6.3.1-2017.02-x86_64_aarch64-linux-gnu/bin</span><br></pre></td></tr></table></figure>
+
+<p>然后执行source ~/.bashrc，新的PATH就生效了。</p>
+<p>接着我们得知道这个工具链对应的内核的版本以及工具链的版本。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">quahe@quahe-virtual-machine:~/Desktop/QEMU_arch64/gcc-linaro-6.3.1-2017.02-x86_64_aarch64-linux-gnu$ cat ./aarch64-linux-gnu/libc/usr/include/linux/version.h</span><br><span class="line"><span class="meta">#</span><span class="bash">define LINUX_VERSION_CODE 263680</span></span><br><span class="line"><span class="meta">#</span><span class="bash">define KERNEL_VERSION(a,b,c) (((a) &lt;&lt; <span class="string">16) + ((b) &lt;&lt; 8) + (c</span></span></span><br><span class="line">))</span><br><span class="line">quahe@quahe-virtual-machine:~/Desktop/QEMU_arch64/gcc-linaro-6.3.1-2017.02-x86_64_aarch64-linux-gnu/bin$ aarch64-linux-gnu-gcc -v</span><br><span class="line">Using built-in specs.</span><br><span class="line">COLLECT_GCC=aarch64-linux-gnu-gcc</span><br><span class="line">COLLECT_LTO_WRAPPER=/home/quahe/Desktop/QEMU_arch64/gcc-linaro-6.3.1-2017.02-x86_64_aarch64-linux-gnu/bin/../libexec/gcc/aarch64-linux-gnu/6.3.1/lto-wrapper</span><br><span class="line">Target: aarch64-linux-gnu</span><br><span class="line">Configured with: /home/tcwg-buildslave/workspace/tcwg-make-release/label/docker-trusty-amd64-tcwg-build/target/aarch64-linux-gnu/snapshots/gcc-linaro-6.3-2017.02/configure SHELL=/bin/bash --with-mpc=/home/tcwg-buildslave/workspace/tcwg-make-release/label/docker-trusty-amd64-tcwg-build/target/aarch64-linux-gnu/_build/builds/destdir/x86_64-unknown-linux-gnu --with-mpfr=/home/tcwg-buildslave/workspace/tcwg-make-release/label/docker-trusty-amd64-tcwg-build/target/aarch64-linux-gnu/_build/builds/destdir/x86_64-unknown-linux-gnu --with-gmp=/home/tcwg-buildslave/workspace/tcwg-make-release/label/docker-trusty-amd64-tcwg-build/target/aarch64-linux-gnu/_build/builds/destdir/x86_64-unknown-linux-gnu --with-gnu-as --with-gnu-ld --disable-libmudflap --enable-lto --enable-objc-gc --enable-shared --without-included-gettext --enable-nls --disable-sjlj-exceptions --enable-gnu-unique-object --enable-linker-build-id --disable-libstdcxx-pch --enable-c99 --enable-clocale=gnu --enable-libstdcxx-debug --enable-long-long --with-cloog=no --with-ppl=no --with-isl=no --disable-multilib --enable-fix-cortex-a53-835769 --enable-fix-cortex-a53-843419 --with-arch=armv8-a --enable-threads=posix --enable-multiarch --enable-libstdcxx-time=yes --enable-gnu-indirect-function --with-build-sysroot=/home/tcwg-buildslave/workspace/tcwg-make-release/label/docker-trusty-amd64-tcwg-build/target/aarch64-linux-gnu/_build/sysroots/aarch64-linux-gnu --with-sysroot=/home/tcwg-buildslave/workspace/tcwg-make-release/label/docker-trusty-amd64-tcwg-build/target/aarch64-linux-gnu/_build/builds/destdir/x86_64-unknown-linux-gnu/aarch64-linux-gnu/libc --enable-checking=release --disable-bootstrap --enable-languages=c,c++,fortran,lto --build=x86_64-unknown-linux-gnu --host=x86_64-unknown-linux-gnu --target=aarch64-linux-gnu --prefix=/home/tcwg-buildslave/workspace/tcwg-make-release/label/docker-trusty-amd64-tcwg-build/target/aarch64-linux-gnu/_build/builds/destdir/x86_64-unknown-linux-gnu</span><br><span class="line">Thread model: posix</span><br><span class="line">gcc version 6.3.1 20170109 (Linaro GCC 6.3-2017.02) </span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>于是我们知道了对应Kernel version是4.6.X，对应GCC的版本是6.3.1</p>
+<h5 id="3-编译文件系统"><a href="#3-编译文件系统" class="headerlink" title="3.编译文件系统"></a>3.编译文件系统</h5><p>这里推荐使用Buildroot，十分方便。可以自由加入多种Packages，一键编译。而且里面自带了对支持QUME的配置config。</p>
+<p>国内编译Buildroot的时候，下载Packages比较慢，建议Windows或者Mac上开VPN，然后设置Ubuntu和Host主机共享网络。具体设置可以参考Blog：“<a target="_blank" rel="noopener" href="https://www.jianshu.com/p/6c7abd4adc9b%E2%80%9D">https://www.jianshu.com/p/6c7abd4adc9b”</a></p>
+<p>首先去官网下载最新Buildroot，网址为“<a target="_blank" rel="noopener" href="https://buildroot.net/%E2%80%9D%E3%80%82">https://buildroot.net/”。</a></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">make qemu_aarch64_virt_defconfig</span><br><span class="line">make menuconfig</span><br><span class="line">make savedefconfig</span><br><span class="line">make</span><br></pre></td></tr></table></figure>
+
+<p>接下来聊一下具体的menuconfig的细节，首先得配置正确的toolchain</p>
+<p><img src="https://imgstg.oss-cn-shanghai.aliyuncs.com/img/toolchain.png"></p>
+<p>接着在kernel选项中，不要勾选kernel，我们还是自己独立编译Kernel比较好。</p>
+<p>在Filesystem images里面选择cpio。</p>
+<p><img src="https://imgstg.oss-cn-shanghai.aliyuncs.com/img/menuconfig.png"></p>
+<p>编译完毕以后还需要将编译好的文件放到适当的地方。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">mkdir ../rootfs</span><br><span class="line">cp output/images/rootfs.cpio  ../linux-5.4.99</span><br><span class="line">cp output/images/rootfs.ext2  ../rootfs/</span><br><span class="line">cp output/images/rootfs.ext4  ../rootfs/</span><br><span class="line">cp output/images/start-qemu.sh  ../rootfs/</span><br></pre></td></tr></table></figure>
+
+<h5 id="4-编译内核"><a href="#4-编译内核" class="headerlink" title="4.编译内核"></a>4.编译内核</h5><p>我们这里为了学习Kernel，下载了一个5.4.99版本，下载地址为“<a target="_blank" rel="noopener" href="https://mirrors.tuna.tsinghua.edu.cn/kernel/v5.x/">Index of /kernel/v5.x/ | 清华大学开源软件镜像站 | Tsinghua Open Source Mirror</a>”。</p>
+<p>目前的Linux Kernel对ARM64只有一个/arch/arm64/configs/defconfig配置文件，所以用这个就行。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">make ARCH=arm64  defconfig</span><br><span class="line">make ARCH=arm64  menuconfig</span><br><span class="line">make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu-  -j8</span><br></pre></td></tr></table></figure>
+
+<p>接下来再讲讲Menuconfig</p>
+<p>打开.config文件，修改成CONFIG_CMDLINE=”console=ttyAMA0”，以及CONFIG_INITRAMFS_SOURCE=rootfs.cpio。</p>
+<p>编译完成以后</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cp arch/arm64/boot/Image ../rootfs/</span><br></pre></td></tr></table></figure>
+
+<p>5.QEMU运行ARM64</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd rootfs</span><br><span class="line">./start-qemu.sh</span><br></pre></td></tr></table></figure>
+
+<p>接下来具体分析一下start-qemu.sh命令</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">exec qemu-system-aarch64 -M virt -m 5120M -cpu cortex-a53 -nographic -smp 1 \</span><br><span class="line">-kernel Image -append &quot;rootwait root=/dev/vda console=ttyAMA0&quot; </span><br><span class="line">-netdev user,id=eth0 -device virtio-net-device,netdev=eth0 </span><br><span class="line">-drive file=rootfs.ext4,if=none,format=raw,id=hd0 -device virtio-blk-device,drive=hd0 </span><br><span class="line">-nographic</span><br></pre></td></tr></table></figure>
+
+<p>-M virt表示，运行的是一个抽象的机器。QEMU还支持很多具体的board，但是对ARM64开始，用virt最简单。</p>
+<p>-m 5120M表示内存大小是5GB</p>
+<p>-cpu cortex-a53是指定CPU类型</p>
+<p>-nographic是指不启动图形化界面，不然会起一个VNC server，需要VNC登录</p>
+<p>-kernel Image是指从内核进行Image直接启动，如果感兴趣这里也可以用uboot Image启动，把内核Image放在文件系统中，后续用U-boot加载和启动内核Image</p>
+<p>。</p>
+
+        
+            <div class="donate-container">
+    <div class="donate-button">
+        <button id="donate-button">赞赏</button>
+    </div>
+    <div class="donate-img-container hide" id="donate-img-container">
+        <img id="donate-img" src="" data-src="/img/donate.jpg">
+        <p> 感谢鼓励 </p>
+    </div>
+</div>
+        
+        <br />
+        <div id="comment-container">
+        </div>
+        <div id="disqus_thread"></div>
+
+        <div id="lv-container">
+        </div>
+
+    </div>
+</div>
+
+    </div>
+</div>
+
+
+<footer class="footer">
+    <ul class="list-inline text-center">
+        
+        
+        <li>
+            <a target="_blank" href="https://www.zhihu.com/people/何Rivers">
+                            <span class="fa-stack fa-lg">
+                                 <i class="iconfont icon-zhihu"></i>
+                            </span>
+            </a>
+        </li>
+        
+
+        
+
+        
+
+        
+        <li>
+            <a target="_blank"  href="https://github.com/RiversWang">
+                            <span class="fa-stack fa-lg">
+                                <i class="iconfont icon-github"></i>
+                            </span>
+            </a>
+        </li>
+        
+
+        
+
+    </ul>
+    
+    <p>
+        <span>/</span>
+        
+        <span><a target="_blank" rel="noopener" href="https://zhihu.com/people/he-quan-qi">知乎</a></span>
+        <span>/</span>
+        
+        <span><a href="rivers.sparksfly@gamil.com">Gmail</a></span>
+        <span>/</span>
+        
+        <span><a href="#">It helps SEO</a></span>
+        <span>/</span>
+        
+    </p>
+    
+    <p>
+        <span id="busuanzi_container_site_pv">
+            <span id="busuanzi_value_site_pv"></span>PV
+        </span>
+        <span id="busuanzi_container_site_uv">
+            <span id="busuanzi_value_site_uv"></span>UV
+        </span>
+        Created By <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>  Theme <a target="_blank" rel="noopener" href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a></p>
+</footer>
+
+
+
+
+</body>
+
+<script>
+    // We expose some of the variables needed by the front end
+    window.hexo_search_path = "search.json"
+    window.hexo_root = "/"
+    window.isPost = true
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+
+<script src="/js/index.js"></script>
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+    <script>
+        /**
+         *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+         *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+        */
+        if( '' || '')
+        var disqus_config = function () {
+            this.page.url = '';  // Replace PAGE_URL with your page's canonical URL variable
+            this.page.identifier = ''; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+        };
+
+        (function() { // DON'T EDIT BELOW THIS LINE
+            var d = document, s = d.createElement('script');
+            s.src = 'https://riverswang.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();
+    </script>
+
+
+
+</html>
